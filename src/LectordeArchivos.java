@@ -17,6 +17,7 @@ public class LectordeArchivos {
     private ArrayList<NodosRamas> Keywords;
 
 
+
     public LectordeArchivos(){
 
         /*-----------------------------Creacion de Expresiones Regulares----------------------------------------------*/
@@ -33,7 +34,7 @@ public class LectordeArchivos {
 
         String CharRegex = "(" + charRegex  +")|(CHR(" + numberRegex + "))";
         String BasicSetRegex = "(" + stringRegex + ")|(" + identRegex + ")|((" + CharRegex + ")|(" + CharRegex + "--" + CharRegex + "))";
-        String SetRegex = "(" + BasicSetRegex + ")" + "((\\+|-)(" + BasicSetRegex + "))*";
+        String SetRegex = "(" + BasicSetRegex + ")" + "((~|-)(" + BasicSetRegex + "))*";
         String SetDeclRegex = "(" + identRegex+ ")=(" + SetRegex + ")";
 
         String KeywordDecl = "(" +identRegex + ")=(" +stringRegex +")";
@@ -170,52 +171,10 @@ public class LectordeArchivos {
         return lineas;
     }
 
-    /*Metodo que permite ver las partes principales del documentoy decir si este posee sintaxis correcta de Cocol o no*/
-    public boolean chequearSintaxisInicial(ArrayList<String> lineas){
-
-        boolean resultado = true;
-        if(lineas.size() == 0){
-            System.out.println("Archivo Vacio");
-            resultado =  false;
-        }
-        StringTokenizer primeraLinea = new StringTokenizer(lineas.get(0));
-        if(!primeraLinea.nextToken().equals("COMPILER")){
-            System.out.println("Syntax error: COMPILER not found");
-            resultado =   false;
-        }
-        String identificador = primeraLinea.nextToken();
-        if(!simularAFD(ident, identificador)){
-            System.out.println("Syntax error: ident " + identificador +  " not viable ");
-            resultado =   false;
-        }
-
-
-        StringTokenizer ultimaLinea = new StringTokenizer(lineas.get(lineas.size()-1));
-        if (!ultimaLinea.nextToken().equals("END")){
-            System.out.println("Syntax error: END not found");
-            resultado =   false;
-        }
-        String identificadorFinal = ultimaLinea.nextToken();
-        String identFinal = identificadorFinal.substring(0, identificadorFinal.length() - 1);
-        String dot = identificadorFinal.substring(identificadorFinal.length() - 1, identificadorFinal.length());
-        if(!dot.equals(".")){
-            System.out.println("Syntax error: notation \".\" not found");
-            resultado = false;
-        }
-        else if(!identificador.equals(identFinal)){
-            System.out.println("Syntax error: identificator "+ identFinal+ " not found");
-            resultado =   false;
-        }
-
-
-        return resultado;
-    }
-
 
     /*-------------------------------------------ChequearSintaxisDelArchivo--------------------------------------------*/
     public boolean chequearSintaxis(ArrayList<String> lineas){
 
-        simularAFD(Characters, "a=\"ab\"");
         boolean resultado = true;
         /*Chequear en caso el documento esta vacio*/
         if(lineas.size() == 0){
@@ -303,8 +262,8 @@ public class LectordeArchivos {
 
                         if(!simularAFD(Characters, lineaSinPunto)){
                             resultado = false;
-                            System.out.println("Syntax error: Line " +(i+1) + " of written code, expression is not a " +
-                                    "SetDecl");
+                            System.out.println("Syntax error: Line " +(i+1) + " of written code, expression "+
+                                    lineaConPunto+ "is not a CHARACTER expression");
                         }
                     }
 
@@ -327,7 +286,8 @@ public class LectordeArchivos {
                     if(sintaxis){
                         if(!simularAFD(Keywords, lineaSinPunto)){
                             resultado = false;
-                            System.out.println("Syntax error: Line " +(i+1)+ " of written code, " + lineaConPunto + " not an KEYWORD expresion");
+                            System.out.println("Syntax error: Line " +(i+1)+ " of written code, " + lineaConPunto +
+                                    " not an KEYWORD expresion");
                         }
                     }
 

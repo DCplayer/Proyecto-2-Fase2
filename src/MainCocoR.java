@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.StringTokenizer;
 
-/**
+/*Este programa funciona siempre y cuando
+* 1. Si se quiere realizar el basicSet, el cual se añade con el termino de Char [.. Char], se debde de utilizar -- en lugar de ..
+* 2. Para sumar basicSets dentro de CHARACTERS, se debe de usar el signo ~ o bien Alt+126 para *//**
  * Created by DiegoCastaneda on 01/09/2017.
  */
 public class MainCocoR {
@@ -16,6 +18,7 @@ public class MainCocoR {
         String linea;
         ArrayList<String> contenido = new ArrayList<>();
         LectordeArchivos lector = new LectordeArchivos();
+        CreadorTokens creador = new CreadorTokens();
 
 
 
@@ -30,15 +33,22 @@ public class MainCocoR {
         /*Aqui Viene toda la historia de ifs, whiles y condicionales que ayudaran a verificar la aceptacion de COCOR*/
 
         ArrayList<String> lineas = lector.crearLector();
-        if(!lector.chequearSintaxisInicial(lineas)){
-            System.out.println("MalFuncionamiento en el programa");
-        }
         if(!lector.chequearSintaxis(lineas)){
             System.out.println("Malfunction of .txt, Found several Syntax errors");
         }
         else{
             System.out.println("Archivo Sintacticamente Correcto");
+
+            /*Esto sirve para que lo que se cree en el lector de Archivos sea usado mas adelante, en la creacion
+            * de tokens*/
+            creador.setLineas(lineas);
+            creador.dividirVencer();
+            creador.CreateNewJavaFile(lineas);
+            creador.CreateNewTokenFile();
         }
+
+
+
     }
 
     }
