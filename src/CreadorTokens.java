@@ -14,7 +14,7 @@ public class CreadorTokens {
     private int numeroCharacters = 0;
     private int numeroKeywords = 0;
 
-    private String imports = "import java.util.ArrayList;\nimport java.util.Scanner;\n";
+    private String imports = "import java.util.ArrayList;\nimport java.util.Scanner;\nimport java.io.*;\n";
     private String header = "\npublic class Lexer{\n";
     private String mainIntroduction = "    public static void main (String args[]){\n";
     private String contenido = "";
@@ -49,8 +49,9 @@ public class CreadorTokens {
 
     public void CreateNewTokenFile(){
         if(numeroCharacters != 0){
-
+            
         }
+        /*Creador de Tokens debajo de KeyWord*/
         if(numeroKeywords != 0){
             ArrayList<String> keywords = new ArrayList<>();
             for(int j = numeroKeywords; j < lineas.size()-1; j++){
