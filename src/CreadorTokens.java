@@ -11,6 +11,8 @@ import java.util.StringTokenizer;
  */
 public class CreadorTokens {
 
+    private ArrayList<ArrayList<String>> palabrasConocidas = new ArrayList<>();
+
     private int numeroCharacters = 0;
     private int numeroKeywords = 0;
 
@@ -26,13 +28,10 @@ public class CreadorTokens {
 
     private ArrayList<String> lineas = new ArrayList<>();
 
-
-
-        /*Metodo que ayudara a la creacion de los tokens para su utilizacion en otro lenguaje por medio de division en cada
-    * del documento, y depeniendo debajo de que palabra reservada de Cocol se encuentre, para su proxima creacion como
-    * tokens*/
-    public void dividirVencer(){
-
+    /*Al crear el CreadorTokens, se define el numeroCharacters y el numeroKeywords, con los cuales se puede definir
+    * de donde a donde va el contenido de cada uno */
+    public CreadorTokens(ArrayList<String> lineas) {
+        this.lineas = lineas;
         for(int s = 0; s<lineas.size(); s++){
             StringTokenizer lineaALeer = new StringTokenizer(lineas.get(s));
             String laPrueba = lineaALeer.nextToken();
@@ -47,8 +46,16 @@ public class CreadorTokens {
 
     }
 
+
+    /*--------------Metodo para crear el documento con los Tokens que sera leido por el programa lexeado-------------*/
     public void CreateNewTokenFile(){
         if(numeroCharacters != 0){
+            ArrayList<String> characters = new ArrayList<>();
+            for (int j = numeroCharacters; j < numeroKeywords -1; j++){
+                characters.add(lineas.get(j));
+            }
+
+            tokens = tokens + agregarTokensCharacters(characters);
             
         }
         /*Creador de Tokens debajo de KeyWord*/
@@ -62,7 +69,7 @@ public class CreadorTokens {
 
         }
     }
-
+    /*----------Metodo para crear el documento de Java capaz de identificar los tokens que se le han dado-------------*/
     public void CreateNewJavaFile(ArrayList<String> lineas){
         contenido = imports + header + mainIntroduction;
 
@@ -84,7 +91,7 @@ public class CreadorTokens {
 
     }
 
-    /*Funcion que devolvera el String con los tokens a agregar*/
+    /*----------------------Funcion que devolvera el String con los tokens a agregar---------------------------------*/
     public String agregarTokensKeywords(List<String> lineasEspecificas){
 
         ArrayList<String> contieneIdent = new ArrayList<>();
@@ -132,6 +139,56 @@ public class CreadorTokens {
             tokensKeywords = tokensKeywords + contieneIdent.get(s) + "," + contieneValores.get(s) + "\n";
         }
         return tokensKeywords;
+    }
+
+    //--------------------Metodo para agregar los tokens producidos en la parte de CHARACTERS------------------------
+    public String agregarTokensCharacters(ArrayList<String> lineasEspecificas){
+        String resultado = "";
+        for(String linea: lineasEspecificas){
+            ArrayList<String> palabraAprendida = new ArrayList<>();
+            boolean Simple = chequearSiCharacterSimple(linea);
+
+            if(Simple){
+                String lineaSinEspacios = linea.replaceAll("\\s+", "");
+                int indexIgual = lineaSinEspacios.indexOf("=");
+
+                String identificador = lineaSinEspacios.substring(0,indexIgual);
+                String valor = lineaSinEspacios.substring(indexIgual+2, lineaSinEspacios.length()-2);
+
+                palabraAprendida.add(identificador);
+                for(int x =0; x < valor.length(); x++){
+                    String temporal = valor.substring(x, x+1);
+                    resultado = resultado + identificador + "," + temporal + "\n";
+                    palabraAprendida.add(temporal);
+                }
+                palabrasConocidas.add(palabraAprendida);
+
+
+
+            }
+            if(!Simple){
+
+            }
+
+        }
+        return resultado;
+    }
+
+    //-----------------------Metodo para chequear si la linea de Characteres es simple--------------------------------
+    public boolean chequearSiCharacterSimple(String lineaConEspacios){
+        boolean resultado = false;
+        if(lineaConEspacios.indexOf("=") > 0){
+            String lineaSinEspacios = lineaConEspacios.replaceAll("\\s+", "");
+            int elIndex = lineaSinEspacios.indexOf("=")+1;
+
+            String estructuraFinal = lineaSinEspacios.substring(lineaSinEspacios.length()-2);
+            String estructuraInicial = lineaSinEspacios.substring(elIndex, elIndex +1 );
+            if(estructuraInicial.equals("\"") && estructuraFinal.equals("\".")){
+                resultado = true;
+            }
+
+        }
+        return  resultado;
     }
 
     public int getNumeroCharacters() {
