@@ -4,6 +4,7 @@ import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 /**
@@ -56,7 +57,8 @@ public class CreadorTokens {
             }
 
             tokens = tokens + agregarTokensCharacters(characters);
-            
+
+
         }
         /*Creador de Tokens debajo de KeyWord*/
         if(numeroKeywords != 0){
@@ -68,6 +70,7 @@ public class CreadorTokens {
             tokens = tokens + agregarTokensKeywords(keywords);
 
         }
+        System.out.println(tokens);
     }
     /*----------Metodo para crear el documento de Java capaz de identificar los tokens que se le han dado-------------*/
     public void CreateNewJavaFile(ArrayList<String> lineas){
@@ -158,7 +161,7 @@ public class CreadorTokens {
                 palabraAprendida.add(identificador);
                 for(int x =0; x < valor.length(); x++){
                     String temporal = valor.substring(x, x+1);
-                    resultado = resultado + identificador + "," + temporal + "\n";
+                    resultado = resultado + temporal + "," +  identificador+ "\n";
                     palabraAprendida.add(temporal);
                 }
                 palabrasConocidas.add(palabraAprendida);
@@ -167,6 +170,101 @@ public class CreadorTokens {
 
             }
             if(!Simple){
+                String lineaSinEspacios = linea.replaceAll("\\s+", "");
+                int indexIgual = lineaSinEspacios.indexOf("=");
+
+                String identificador = lineaSinEspacios.substring(0,indexIgual);
+                String valor = lineaSinEspacios.substring(indexIgual+1, lineaSinEspacios.length()-1);
+
+                palabraAprendida.add(identificador);
+                ArrayList<Integer> indexesDeSuma = new ArrayList<>();
+                ArrayList<String> temporales = new ArrayList<>();
+
+                for (int index = valor.indexOf("~");
+                     index >= 0;
+                     index = valor.indexOf("~", index + 1))
+                {
+                    indexesDeSuma.add(index);
+                }
+
+                int indiceInicial = -1;
+                int indiceFinal = 0;
+                for(int x = 0; x < indexesDeSuma.size();  x++){
+                    indiceFinal =indexesDeSuma.get(x);
+                    temporales.add(valor.substring(indiceInicial+1, indiceFinal));
+
+                    indiceInicial = indiceFinal;
+                }
+                temporales.add(valor.substring(indiceInicial+1));
+
+                /*----------------------------------AQUI ME QUEDE AQUI ESTAMOS EN PASO 4 DE LA HOJA--------------*/
+                /*------------------------------------PROBAR ESTE METODO EN ESTA PARTE EN ESPECIFICO*/
+                Stack<ArrayList<String>> palabrasACombinar = new Stack();
+
+                for(String compuesto: temporales){
+                    int index = 0;
+                    boolean revisar = true;
+
+                    while (index < palabrasConocidas.size() && revisar){
+                        if(compuesto.equals(palabrasConocidas.get(index).get(0))){
+                            revisar = false;
+                            int tamano = palabrasConocidas.get(index).size();
+
+                            List<String> conocido = palabrasConocidas.get(index).subList(1, tamano);
+                            ArrayList<String> conocidoYStack = new ArrayList<>();
+                            conocidoYStack.addAll(conocido);
+
+                            palabrasACombinar.push(conocidoYStack);
+                        }
+                        index = index +1;
+
+                    }
+                    if(revisar){
+                        String componenteNuevo = compuesto.substring(1, compuesto.length()-1);
+                        ArrayList<String> conocidoYStack = new ArrayList<>();
+
+                        for(int x = 0; x < componenteNuevo.length(); x++){
+                            String componente = componenteNuevo.substring(x, x+1);
+                            conocidoYStack.add(componente);
+                        }
+                        palabrasACombinar.push(conocidoYStack);
+                    }
+
+                }
+
+                ArrayList<String> cola = new ArrayList<>();
+                ArrayList<String> cabeza = new ArrayList<>();
+                boolean quedaUno = false;
+
+                while(!quedaUno){
+                    cola = palabrasACombinar.pop();
+                    if(palabrasACombinar.isEmpty()){
+                        quedaUno = true;
+                        palabrasACombinar.push(cola);
+                    }
+                    else{
+                        cabeza = palabrasACombinar.pop();
+                        ArrayList<String> combinacion = new ArrayList<>();
+                        for(String x: cabeza){
+                            for(String y: cola){
+                                combinacion.add(x + y);
+                            }
+                        }
+                        palabrasACombinar.push(combinacion);
+
+                    }
+
+                }
+                ArrayList<String> todasLasCombinaciones = new ArrayList<>();
+                todasLasCombinaciones = palabrasACombinar.pop();
+                palabraAprendida.addAll(todasLasCombinaciones);
+
+                for(String x: todasLasCombinaciones){
+                    resultado = resultado + x + "," +  identificador+ "\n";
+
+                }
+                palabrasConocidas.add(palabraAprendida);
+
 
             }
 
