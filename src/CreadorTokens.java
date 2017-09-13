@@ -17,7 +17,8 @@ public class CreadorTokens {
     private int numeroCharacters = 0;
     private int numeroKeywords = 0;
 
-    private String imports = "import java.util.ArrayList;\nimport java.util.Scanner;\nimport java.io.*;\n";
+    private String imports = "import java.util.ArrayList;\nimport java.util.Scanner;\nimport java.io.*;\n" +
+            "import java.io.FileReader;\nimport java.util.StringTokenizer;\n";
     private String header = "\npublic class Lexer{\n";
     private String mainIntroduction = "    public static void main (String args[]){\n";
     private String contenido = "";
@@ -89,9 +90,40 @@ public class CreadorTokens {
     public void CreateNewJavaFile(ArrayList<String> lineas){
         contenido = imports + header + mainIntroduction;
 
-        contenido = contenido + "    Scanner scanner = new Scanner(System.in);\n" +
-                "    System.out.println(\"Ingrese el nombre del archivo con el código que desea lexear: \");\n" +
-                "    String archivo = scanner.nextLine();\n" +
+        contenido = contenido + "        Scanner scanner = new Scanner(System.in);\n" +
+                "        System.out.println(\"Ingrese el nombre del archivo con el código que desea lexear: \");\n" +
+                "        String archivo = scanner.nextLine();\n" +
+                "        ArrayList<String> lineasAImprimir = new ArrayList();\n" +
+                "        try (BufferedReader lectorArchivo = new BufferedReader(new FileReader(archivo))){\n" +
+                "            try (BufferedReader lectorTokens = new BufferedReader(new FileReader(\"tokens.txt\"))){\n" +
+                "                lectorTokens.mark(1000);\n" +
+                "                String lineaArchivo = lectorArchivo.readLine();\n" +
+                "                while(lineaArchivo != null){\n" +
+                "                    StringTokenizer st = new StringTokenizer(lineaArchivo);\n" +
+                "                    while(st.hasMoreTokens()){\n" +
+                "                        String componente = st.nextToken();\n" +
+                "                        String lineaToken = lectorTokens.readLine();\n" +
+                "                        while(lineaToken != null){\n" +
+                "                            int indexComa = lineaToken.indexOf(\",\");\n" +
+                "                            String s = lineaToken.substring(0,indexComa);\n" +
+                "                            if(s.equals(componente)){\n" +
+                "                                lineasAImprimir.add(lineaToken);\n" +
+                "                                lectorTokens.reset();\n" +
+                "                                lectorTokens.mark(1000);\n" +
+                "                                break;\n" +
+                "" +
+                "                            }\n" +
+                "                            lineaToken = lectorTokens.readLine();\n" +
+                "                        }\n" +
+                "                    }\n" +
+                "                    lineaArchivo = lectorArchivo.readLine();\n" +
+                "                }\n" +
+                "            }\n" +
+                "        } catch (FileNotFoundException e) {\n" +
+                "            e.printStackTrace();\n" +
+                "        } catch (IOException e) {\n" +
+                "            e.printStackTrace();\n" +
+                "        }\n" +
                 "";
 
         /*Aqui viene el codigo que le da forma a la clase de Java*/
@@ -112,9 +144,7 @@ public class CreadorTokens {
 
     }
 
-    public void funcionPruebaparaDocumento(){
 
-    }
 
     /*----------------------Funcion que devolvera el String con los tokens a agregar---------------------------------*/
     public String agregarTokensKeywords(List<String> lineasEspecificas){
@@ -159,7 +189,7 @@ public class CreadorTokens {
             contieneValores.add(valor);
 
         }
-        String tokensKeywords = "\n";
+        String tokensKeywords = "";
         for(int s = 0; s < contieneIdent.size(); s++){
             tokensKeywords = tokensKeywords + contieneIdent.get(s) + "," + contieneValores.get(s) + "\n";
         }
