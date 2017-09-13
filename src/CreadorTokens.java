@@ -29,6 +29,8 @@ public class CreadorTokens {
 
     private ArrayList<String> lineas = new ArrayList<>();
 
+
+
     /*Al crear el CreadorTokens, se define el numeroCharacters y el numeroKeywords, con los cuales se puede definir
     * de donde a donde va el contenido de cada uno */
     public CreadorTokens(ArrayList<String> lineas) {
@@ -70,11 +72,27 @@ public class CreadorTokens {
             tokens = tokens + agregarTokensKeywords(keywords);
 
         }
-        System.out.println(tokens);
+
+        try {
+
+            PrintWriter writer = new PrintWriter("tokens.txt");
+            writer.println(tokens);
+            writer.close();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
     }
     /*----------Metodo para crear el documento de Java capaz de identificar los tokens que se le han dado-------------*/
     public void CreateNewJavaFile(ArrayList<String> lineas){
         contenido = imports + header + mainIntroduction;
+
+        contenido = contenido + "    Scanner scanner = new Scanner(System.in);\n" +
+                "    System.out.println(\"Ingrese el nombre del archivo con el código que desea lexear: \");\n" +
+                "    String archivo = scanner.nextLine();\n" +
+                "";
 
         /*Aqui viene el codigo que le da forma a la clase de Java*/
         contenido = contenido + lastBracket;
@@ -91,6 +109,10 @@ public class CreadorTokens {
 
         }
 
+
+    }
+
+    public void funcionPruebaparaDocumento(){
 
     }
 
