@@ -19,6 +19,7 @@ public class Lexer{
                     while(st.hasMoreTokens()){
                         String componente = st.nextToken();
                         String lineaToken = lectorTokens.readLine();
+                        boolean existencia = false;
                         while(lineaToken != null){
                             int indexComa = lineaToken.indexOf(",");
                             String s = lineaToken.substring(0,indexComa);
@@ -30,7 +31,26 @@ public class Lexer{
                             }
                             lineaToken = lectorTokens.readLine();
                         }
-                    }
+                        if(!existencia){
+                            for(int x = 0; x<componente.length(); x++){
+                                lectorTokens.reset();
+                                lectorTokens.mark(1000);
+                                String particion = componente.substring(x, x+1);
+                                lineaToken = lectorTokens.readLine();
+                                while(lineaToken != null){
+                                    int indexComa = lineaToken.indexOf(",");
+                                    String s = lineaToken.substring(0,indexComa);
+
+                                    if(s.equals(particion)){
+                                        lineasAImprimir.add(lineaToken);
+                                        lectorTokens.reset();
+                                        lectorTokens.mark(1000);
+                                        break;
+                                    }
+                                    lineaToken = lectorTokens.readLine();
+                                }
+                            }
+                        }                    }
                     lineaArchivo = lectorArchivo.readLine();
                 }
             }

@@ -103,6 +103,7 @@ public class CreadorTokens {
                 "                    while(st.hasMoreTokens()){\n" +
                 "                        String componente = st.nextToken();\n" +
                 "                        String lineaToken = lectorTokens.readLine();\n" +
+                "                        boolean existencia = false;\n" +
                 "                        while(lineaToken != null){\n" +
                 "                            int indexComa = lineaToken.indexOf(\",\");\n" +
                 "                            String s = lineaToken.substring(0,indexComa);\n" +
@@ -111,10 +112,31 @@ public class CreadorTokens {
                 "                                lectorTokens.reset();\n" +
                 "                                lectorTokens.mark(1000);\n" +
                 "                                break;\n" +
-                "" +
+
                 "                            }\n" +
                 "                            lineaToken = lectorTokens.readLine();\n" +
                 "                        }\n" +
+                "                        if(!existencia){\n" +
+                "                            for(int x = 0; x<componente.length(); x++){\n" +
+                "                                lectorTokens.reset();\n" +
+                "                                lectorTokens.mark(1000);\n" +
+                "                                String particion = componente.substring(x, x+1);\n" +
+                "                                lineaToken = lectorTokens.readLine();\n" +
+                "                                while(lineaToken != null){\n" +
+                "                                    int indexComa = lineaToken.indexOf(\",\");\n" +
+                "                                    String s = lineaToken.substring(0,indexComa);\n" +
+                "\n" +
+                "                                    if(s.equals(particion)){\n" +
+                "                                        lineasAImprimir.add(lineaToken);\n" +
+                "                                        lectorTokens.reset();\n" +
+                "                                        lectorTokens.mark(1000);\n" +
+                "                                        break;\n" +
+                "                                    }\n" +
+                "                                    lineaToken = lectorTokens.readLine();\n" +
+                "                                }\n" +
+                "                            }\n" +
+                "                        }" +
+                "" +
                 "                    }\n" +
                 "                    lineaArchivo = lectorArchivo.readLine();\n" +
                 "                }\n" +

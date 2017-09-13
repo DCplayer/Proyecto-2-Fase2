@@ -63,14 +63,13 @@ public class MainCocoR {
                         String componente = st.nextToken();
                         String lineaToken = lectorTokens.readLine();
                         boolean existencia = false;
-                        while(lineaToken != null && !lineaToken.equals("")){
+                        while(lineaToken != null){
                             int indexComa = lineaToken.indexOf(",");
                             String s = lineaToken.substring(0,indexComa);
                             if(s.equals(componente)){
                                 lineasAImprimir.add(lineaToken);
                                 lectorTokens.reset();
                                 lectorTokens.mark(1000);
-                                existencia = true;
                                 break;
                             }
                             lineaToken = lectorTokens.readLine();
@@ -94,8 +93,7 @@ public class MainCocoR {
                                     lineaToken = lectorTokens.readLine();
                                 }
                             }
-                        }
-                    }
+                        }                    }
                     lineaArchivo = lectorArchivo.readLine();
                 }
             }
