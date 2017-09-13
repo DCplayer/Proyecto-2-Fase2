@@ -20,9 +20,13 @@ public class MainCocoR {
         ArrayList<String> contenido = new ArrayList<>();
         LectordeArchivos lector = new LectordeArchivos();
 
+        Scanner escaner = new Scanner(System.in);
+        System.out.println("Ingrese el archivo con las especificaciones del lexer: ");
+        String archivaldo = escaner.nextLine();
+
 
         //Arraylist que contiene las lineas no vacias del documento con las especificaciones de Cocol/R
-        ArrayList<String> lineas = lector.crearLector();
+        ArrayList<String> lineas = lector.crearLector(archivaldo);
 
         //Creando el creador de tokens con las lineas del documento de especificaciones de Cocol/R
         CreadorTokens creador = new CreadorTokens(lineas);
@@ -63,13 +67,14 @@ public class MainCocoR {
                         String componente = st.nextToken();
                         String lineaToken = lectorTokens.readLine();
                         boolean existencia = false;
-                        while(lineaToken != null){
+                        while(lineaToken != null && !lineaToken.equals("")){
                             int indexComa = lineaToken.indexOf(",");
                             String s = lineaToken.substring(0,indexComa);
                             if(s.equals(componente)){
                                 lineasAImprimir.add(lineaToken);
                                 lectorTokens.reset();
                                 lectorTokens.mark(1000);
+                                existencia = true;
                                 break;
                             }
                             lineaToken = lectorTokens.readLine();

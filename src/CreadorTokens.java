@@ -104,13 +104,14 @@ public class CreadorTokens {
                 "                        String componente = st.nextToken();\n" +
                 "                        String lineaToken = lectorTokens.readLine();\n" +
                 "                        boolean existencia = false;\n" +
-                "                        while(lineaToken != null){\n" +
+                "                        while(lineaToken != null && !lineaToken.equals(\"\")){\n" +
                 "                            int indexComa = lineaToken.indexOf(\",\");\n" +
                 "                            String s = lineaToken.substring(0,indexComa);\n" +
                 "                            if(s.equals(componente)){\n" +
                 "                                lineasAImprimir.add(lineaToken);\n" +
                 "                                lectorTokens.reset();\n" +
                 "                                lectorTokens.mark(1000);\n" +
+                "                                existencia = true;\n" +
                 "                                break;\n" +
 
                 "                            }\n" +

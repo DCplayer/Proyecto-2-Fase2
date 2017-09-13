@@ -153,9 +153,9 @@ public class LectordeArchivos {
     }
 
     /*Metodo para la separacion de cada una de las lineas de un .txt dentro de un ArrayList de String */
-    public ArrayList<String> crearLector(){
+    public ArrayList<String> crearLector(String archivo){
         ArrayList<String> lineas = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("Ejemplo COCOR.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if(!line.equals("")){
